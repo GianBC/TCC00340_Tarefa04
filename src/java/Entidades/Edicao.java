@@ -6,7 +6,8 @@
 package Entidades;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
+import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -21,7 +22,10 @@ public class Edicao implements Serializable {
     private Long id;
     private int numero;
     private String cidade, pais, ano;
-    private Date dataini, datafim;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private java.util.Date dataini;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private java.util.Date datafim;
     private Evento evento;
 
     public Date getDataini() {

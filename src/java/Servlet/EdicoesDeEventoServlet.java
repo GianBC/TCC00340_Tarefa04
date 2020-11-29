@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,8 +41,8 @@ public class EdicoesDeEventoServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        //List<Edicao> lista_edicao = null;
-        //Evento evento=null;
+        List<Edicao> lista_edicao = null;
+        final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");
         
         try (PrintWriter out = response.getWriter()) {
             
@@ -51,14 +52,13 @@ public class EdicoesDeEventoServlet extends HttpServlet {
             try {
                 String uri_base ="http://localhost:8080/tarefa03/webresources/service/evento/";
                 String uri_variavel = (request.getParameter("id_evento")+"/edicoes");
-                //uri = new URI (uri_base+uri_variavel);
-                uri = new URI ("http://localhost:8080/tarefa03/webresources/service/evento/2/edicoes");
+                uri = new URI (uri_base+uri_variavel);
                 this.web_target = client.target(uri);
                 web_target.request().accept(MediaType.APPLICATION_XML);
                 Invocation call = web_target.request().buildGet();
                 Response resp = call.invoke();
                 int status_resp = resp.getStatus();
-                List<Edicao> lista_edicao = resp.readEntity(new GenericType<List<Edicao>>(){});
+                lista_edicao = resp.readEntity(new GenericType<List<Edicao>>(){});
                 
                 /*String base = "http://localhost:8080/AgendaREST/resources/agenda/sobrenomes/";
                 String link = base+request.getParameter("sobrenome");
@@ -80,7 +80,7 @@ public class EdicoesDeEventoServlet extends HttpServlet {
                 
             } catch (URISyntaxException ex) {
                 Logger.getLogger(TodosEventosServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }/*
+            }
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -88,7 +88,7 @@ public class EdicoesDeEventoServlet extends HttpServlet {
             out.println("<title>Todos os eventos</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h2>Lista de Eventos:</h2>");
+            out.println("<h2>Lista de Edições do Evento: "+lista_edicao.get(0).getEvento().getNome()+"</h2>");
             out.println("<ul>");
 
             Iterator<Edicao> EdicaoAsIterator = lista_edicao.iterator();
@@ -98,10 +98,10 @@ public class EdicoesDeEventoServlet extends HttpServlet {
                 out.println("<h3>Ano: "+edicao_itr.getAno()+"</h3>");
                 out.println("<h3>Cidade: "+edicao_itr.getCidade()+"</h3>");
                 out.println("<h3>País: "+edicao_itr.getPais()+"</h3>");
-                out.println("<h3>Data inicial: "+edicao_itr.getDataini()+"</h3>");
-                out.println("<h3>Data final: "+edicao_itr.getDatafim()+"</h3>");
-                out.println("<h3>ID no Banco de Dados: "+edicao_itr.getId()+"</h3>");
-            }*/
+                out.println("<h3>Data inicial: "+FORMATA_DATA.format(edicao_itr.getDataini())+"</h3>");
+                out.println("<h3>Data final: "+FORMATA_DATA.format(edicao_itr.getDatafim())+"</h3>");
+                out.println("<h4>ID no Banco de Dados: "+edicao_itr.getId()+"</h4>");
+            }
             out.println("</ul>");
             out.println(" <h4><a href=\"http://localhost:8080/tarefa04\">Página inicial</a></h4>");
             out.println("</body>");
