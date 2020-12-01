@@ -52,8 +52,8 @@ public class EdicoesEventosPorDataServlet extends HttpServlet {
                 String uri_base ="http://localhost:8080/tarefa03/webresources/service/data/";
                 String data=request.getParameter("data");
                 uri = new URI (uri_base+data);
-                //this.web_target = client.target(uri);
-                this.web_target = client.target("http://localhost:8080/tarefa03/webresources/service/data/2019-01-01");
+                this.web_target = client.target(uri);
+                //this.web_target = client.target("http://localhost:8080/tarefa03/webresources/service/data/2019-01-01");
                 web_target.request().accept(MediaType.APPLICATION_XML);
                 Invocation call = web_target.request().buildGet();
                 Response resp = call.invoke();
@@ -72,7 +72,10 @@ public class EdicoesEventosPorDataServlet extends HttpServlet {
             out.println("<body>");
             out.println("<h2>Lista de Edições do Evento: "+lista_edicao.get(0).getEvento().getNome()+"</h2>");
             out.println("<ul>");
-
+            
+            out.println(request.getParameter("data"));
+            out.println(lista_edicao.isEmpty());
+            
             Iterator<Edicao> EdicaoAsIterator = lista_edicao.iterator();
             while (EdicaoAsIterator.hasNext()) {
                 Edicao edicao_itr = EdicaoAsIterator.next();
@@ -83,6 +86,7 @@ public class EdicoesEventosPorDataServlet extends HttpServlet {
                 out.println("<h3>Data inicial: "+FORMATA_DATA.format(edicao_itr.getDataini())+"</h3>");
                 out.println("<h3>Data final: "+FORMATA_DATA.format(edicao_itr.getDatafim())+"</h3>");
                 out.println("<h4>ID no Banco de Dados: "+edicao_itr.getId()+"</h4>");
+                out.println("<br>");
             }
             out.println("</ul>");
             out.println(" <h4><a href=\"http://localhost:8080/tarefa04\">Página inicial</a></h4>");
