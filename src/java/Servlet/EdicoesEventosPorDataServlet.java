@@ -9,7 +9,6 @@ import Entidades.Edicao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
@@ -34,64 +33,74 @@ import javax.ws.rs.core.Response;
  */
 @WebServlet(name = "EdicoesEventosPorDataServlet", urlPatterns = {"/edicoeseventospordataservlet"})
 public class EdicoesEventosPorDataServlet extends HttpServlet {
-    
+
     WebTarget web_target;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Edicao> lista_edicao = null;
         final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");
-        
+        final SimpleDateFormat DATA_REQUEST_FORMATO = new SimpleDateFormat("yyyy-MM-dd");
+
         try (PrintWriter out = response.getWriter()) {
-            
+
+            java.util.Date data_obj = null;
             Client client = ClientBuilder.newClient();
             URI uri;
 
             try {
-                
-                String uri_base ="http://localhost:8080/tarefa03/webresources/service/data/";
-                String data=request.getParameter("data");
-                uri = new URI (uri_base+data);
+                data_obj = DATA_REQUEST_FORMATO.parse(request.getParameter("data"));
+                String uri_base = "http://localhost:8080/tarefa03/webresources/service/data/";
+                uri = new URI(uri_base + request.getParameter("data"));
                 this.web_target = client.target(uri);
-                //this.web_target = client.target("http://localhost:8080/tarefa03/webresources/service/data/2019-01-01");
                 web_target.request().accept(MediaType.APPLICATION_XML);
                 Invocation call = web_target.request().buildGet();
                 Response resp = call.invoke();
                 int status_resp = resp.getStatus();
-                lista_edicao = resp.readEntity(new GenericType<List<Edicao>>(){});
-                
-            } catch (URISyntaxException ex) {
+                lista_edicao = resp.readEntity(new GenericType<List<Edicao>>() {
+                });
+
+            } catch (Exception ex) {
                 Logger.getLogger(TodosEventosServlet.class.getName()).log(Level.SEVERE, null, ex);
+                out.println("ERRO: <br>");
+                out.println(ex);
+                out.println(" <h4><a href=\"http://localhost:8080/tarefa04\">Página inicial</a></h4>");
             }
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Todos os eventos</title>");
+            out.println("<title>Edições de eventos por data</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h2>Lista de Edições do Evento: "+lista_edicao.get(0).getEvento().getNome()+"</h2>");
+            out.println("<h2>Lista de Edições e seus respectivos Eventos a partir de: " + FORMATA_DATA.format(data_obj) + "</h2>");
             out.println("<ul>");
-            
-            out.println(request.getParameter("data"));
-            out.println(lista_edicao.isEmpty());
-            
-            Iterator<Edicao> EdicaoAsIterator = lista_edicao.iterator();
-            while (EdicaoAsIterator.hasNext()) {
-                Edicao edicao_itr = EdicaoAsIterator.next();
-                out.println("<h3>Número: "+edicao_itr.getNumero()+"</h3>");
-                out.println("<h3>Ano: "+edicao_itr.getAno()+"</h3>");
-                out.println("<h3>Cidade: "+edicao_itr.getCidade()+"</h3>");
-                out.println("<h3>País: "+edicao_itr.getPais()+"</h3>");
-                out.println("<h3>Data inicial: "+FORMATA_DATA.format(edicao_itr.getDataini())+"</h3>");
-                out.println("<h3>Data final: "+FORMATA_DATA.format(edicao_itr.getDatafim())+"</h3>");
-                out.println("<h4>ID no Banco de Dados: "+edicao_itr.getId()+"</h4>");
-                out.println("<br>");
+
+            if (lista_edicao.isEmpty()) {
+                out.println("<h1>NÃO FORAM LOCALIZADOS REGISTROS PARA A DATA INFORMADA!</h1>");
+            } else {
+                Iterator<Edicao> EdicaoAsIterator = lista_edicao.iterator();
+                while (EdicaoAsIterator.hasNext()) {
+                    Edicao edicao_itr = EdicaoAsIterator.next();
+                    
+                    out.println("<h4>Nome do Evento: " + edicao_itr.getEvento().getNome() + "</h4>");
+                    out.println("<h4>ID do Evento: " + edicao_itr.getEvento().getId() + "</h4>");
+                    out.println("<h3>Número: " + edicao_itr.getNumero() + "</h3>");
+                    out.println("<h3>Ano: " + edicao_itr.getAno() + "</h3>");
+                    out.println("<h3>Cidade: " + edicao_itr.getCidade() + "</h3>");
+                    out.println("<h3>País: " + edicao_itr.getPais() + "</h3>");
+                    out.println("<h3>Data inicial: " + FORMATA_DATA.format(edicao_itr.getDataini()) + "</h3>");
+                    out.println("<h3>Data final: " + FORMATA_DATA.format(edicao_itr.getDatafim()) + "</h3>");
+                    out.println("<h4>ID no Banco de Dados: " + edicao_itr.getId() + "</h4>");
+                    out.println("<br>");
+                }
             }
+
             out.println("</ul>");
             out.println(" <h4><a href=\"http://localhost:8080/tarefa04\">Página inicial</a></h4>");
             out.println("</body>");
             out.println("</html>");
+
         }
     }
 
