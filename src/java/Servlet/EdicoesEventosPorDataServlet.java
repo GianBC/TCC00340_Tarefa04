@@ -32,15 +32,13 @@ import javax.ws.rs.core.Response;
  *
  * @author Gianluca Bensabat Calvano
  */
-@WebServlet(name = "EdicoesDeEventoServlet", urlPatterns = {"/edicoesdeeventoservlet"})
-public class EdicoesDeEventoServlet extends HttpServlet {
-
+@WebServlet(name = "EdicoesEventosPorDataServlet", urlPatterns = {"/edicoeseventospordataservlet"})
+public class EdicoesEventosPorDataServlet extends HttpServlet {
+    
     WebTarget web_target;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        
         List<Edicao> lista_edicao = null;
         final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");
         
@@ -50,15 +48,18 @@ public class EdicoesDeEventoServlet extends HttpServlet {
             URI uri;
 
             try {
-                String uri_base ="http://localhost:8080/tarefa03/webresources/service/evento/";
-                String uri_variavel = (request.getParameter("id_evento")+"/edicoes");
-                uri = new URI (uri_base+uri_variavel);
-                this.web_target = client.target(uri);
+                
+                String uri_base ="http://localhost:8080/tarefa03/webresources/service/data/";
+                String data=request.getParameter("data");
+                uri = new URI (uri_base+data);
+                //this.web_target = client.target(uri);
+                this.web_target = client.target("http://localhost:8080/tarefa03/webresources/service/data/2019-01-01");
                 web_target.request().accept(MediaType.APPLICATION_XML);
                 Invocation call = web_target.request().buildGet();
                 Response resp = call.invoke();
                 int status_resp = resp.getStatus();
                 lista_edicao = resp.readEntity(new GenericType<List<Edicao>>(){});
+                
             } catch (URISyntaxException ex) {
                 Logger.getLogger(TodosEventosServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -82,7 +83,6 @@ public class EdicoesDeEventoServlet extends HttpServlet {
                 out.println("<h3>Data inicial: "+FORMATA_DATA.format(edicao_itr.getDataini())+"</h3>");
                 out.println("<h3>Data final: "+FORMATA_DATA.format(edicao_itr.getDatafim())+"</h3>");
                 out.println("<h4>ID no Banco de Dados: "+edicao_itr.getId()+"</h4>");
-                out.println("<br>");
             }
             out.println("</ul>");
             out.println(" <h4><a href=\"http://localhost:8080/tarefa04\">Página inicial</a></h4>");
