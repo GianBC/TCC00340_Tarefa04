@@ -40,25 +40,26 @@ public class EdicoesDeEventoServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
         List<Edicao> lista_edicao = null;
         final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");
-        
+
         try (PrintWriter out = response.getWriter()) {
-            
+
             Client client = ClientBuilder.newClient();
             URI uri;
 
             try {
-                String uri_base ="http://localhost:8080/tarefa03/webresources/service/evento/";
-                String uri_variavel = (request.getParameter("id_evento")+"/edicoes");
-                uri = new URI (uri_base+uri_variavel);
+                String uri_base = "http://localhost:8080/tarefa03/webresources/service/evento/";
+                String uri_variavel = (request.getParameter("id_evento") + "/edicoes");
+                uri = new URI(uri_base + uri_variavel);
                 this.web_target = client.target(uri);
                 web_target.request().accept(MediaType.APPLICATION_XML);
                 Invocation call = web_target.request().buildGet();
                 Response resp = call.invoke();
                 int status_resp = resp.getStatus();
-                lista_edicao = resp.readEntity(new GenericType<List<Edicao>>(){});
+                lista_edicao = resp.readEntity(new GenericType<List<Edicao>>() {
+                });
             } catch (URISyntaxException ex) {
                 Logger.getLogger(TodosEventosServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -69,22 +70,26 @@ public class EdicoesDeEventoServlet extends HttpServlet {
             out.println("<title>Todos os eventos</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h2>Lista de Edições do Evento: "+lista_edicao.get(0).getEvento().getNome()+"</h2>");
-            out.println("<ul>");
-
-            Iterator<Edicao> EdicaoAsIterator = lista_edicao.iterator();
-            while (EdicaoAsIterator.hasNext()) {
-                Edicao edicao_itr = EdicaoAsIterator.next();
-                out.println("<h3>Número: "+edicao_itr.getNumero()+"</h3>");
-                out.println("<h3>Ano: "+edicao_itr.getAno()+"</h3>");
-                out.println("<h3>Cidade: "+edicao_itr.getCidade()+"</h3>");
-                out.println("<h3>País: "+edicao_itr.getPais()+"</h3>");
-                out.println("<h3>Data inicial: "+FORMATA_DATA.format(edicao_itr.getDataini())+"</h3>");
-                out.println("<h3>Data final: "+FORMATA_DATA.format(edicao_itr.getDatafim())+"</h3>");
-                out.println("<h4>ID no Banco de Dados: "+edicao_itr.getId()+"</h4>");
-                out.println("<br>");
+            if (lista_edicao.isEmpty()) {
+                out.println("<h1>NÃO FORAM LOCALIZADOS EVENTOS COM O ID: " + request.getParameter("id_evento") + "</h1>");
+            } else {
+                out.println("<h2>Lista de Edições do Evento: " + lista_edicao.get(0).getEvento().getNome() + "</h2>");
+                out.println("<ul>");
+                Iterator<Edicao> EdicaoAsIterator = lista_edicao.iterator();
+                while (EdicaoAsIterator.hasNext()) {
+                    Edicao edicao_itr = EdicaoAsIterator.next();
+                    out.println("<h3>Número: " + edicao_itr.getNumero() + "</h3>");
+                    out.println("<h3>Ano: " + edicao_itr.getAno() + "</h3>");
+                    out.println("<h3>Cidade: " + edicao_itr.getCidade() + "</h3>");
+                    out.println("<h3>País: " + edicao_itr.getPais() + "</h3>");
+                    out.println("<h3>Data inicial: " + FORMATA_DATA.format(edicao_itr.getDataini()) + "</h3>");
+                    out.println("<h3>Data final: " + FORMATA_DATA.format(edicao_itr.getDatafim()) + "</h3>");
+                    out.println("<h4>ID no Banco de Dados: " + edicao_itr.getId() + "</h4>");
+                    out.println("<br>");
+                }
+                out.println("</ul>");
             }
-            out.println("</ul>");
+
             out.println(" <h4><a href=\"http://localhost:8080/tarefa04\">Página inicial</a></h4>");
             out.println("</body>");
             out.println("</html>");

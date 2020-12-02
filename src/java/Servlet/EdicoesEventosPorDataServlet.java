@@ -83,8 +83,8 @@ public class EdicoesEventosPorDataServlet extends HttpServlet {
                 while (EdicaoAsIterator.hasNext()) {
                     Edicao edicao_itr = EdicaoAsIterator.next();
                     
-                    out.println("<h4>Nome do Evento: " + edicao_itr.getEvento().getNome() + "</h4>");
-                    out.println("<h4>ID do Evento: " + edicao_itr.getEvento().getId() + "</h4>");
+                    out.println("<h4>Nome do Evento: " + edicao_itr.getEvento().getNome() 
+                            + " / ID do Evento: " + edicao_itr.getEvento().getId()+"</h4>");
                     out.println("<h3>Número: " + edicao_itr.getNumero() + "</h3>");
                     out.println("<h3>Ano: " + edicao_itr.getAno() + "</h3>");
                     out.println("<h3>Cidade: " + edicao_itr.getCidade() + "</h3>");
