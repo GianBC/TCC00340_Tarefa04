@@ -8,22 +8,19 @@ package Entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-//import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Gianluca Bensabat Calvano
  */
-
 @XmlRootElement
 public class Evento implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long id;
+    private Long id;    //ID no Banco de Dados
     private String nome, sigla, area, inst_org;
-    private List<Edicao> edicoes;
+    private List<Edicao> edicoes;   //Lista de edições que o evento contém
 
-    //@XmlTransient
     public List<Edicao> getEdicoes() {
         return edicoes;
     }

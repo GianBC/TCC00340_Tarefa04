@@ -14,19 +14,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Gianluca Bensabat Calvano
  */
-
 @XmlRootElement
 public class Edicao implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long id;
-    private int numero;
+    private Long id;    //ID no Banco de Dados
+    private int numero; //Número da edição
     private String cidade, pais, ano;
     @Temporal(javax.persistence.TemporalType.DATE)
-    private java.util.Date dataini;
+    private Date dataini; //Data inicial da edição armazenada como um java.util.Date
     @Temporal(javax.persistence.TemporalType.DATE)
-    private java.util.Date datafim;
-    private Evento evento;
+    private Date datafim;   //Data final da edição armazenada como um java.util.Date
+    private Evento evento;  //Referência ao objeto "Evento" ao qual a edição pertence
 
     public Date getDataini() {
         return dataini;

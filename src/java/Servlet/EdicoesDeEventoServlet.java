@@ -42,7 +42,7 @@ public class EdicoesDeEventoServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         List<Edicao> lista_edicao = null;
-        final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");
+        final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");   //Define o formato da data a ser apresentado
 
         try (PrintWriter out = response.getWriter()) {
 

@@ -39,8 +39,8 @@ public class EdicoesEventosPorDataServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Edicao> lista_edicao = null;
-        final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");
-        final SimpleDateFormat DATA_REQUEST_FORMATO = new SimpleDateFormat("yyyy-MM-dd");
+        final SimpleDateFormat FORMATA_DATA = new SimpleDateFormat("dd/MM/yyyy");   //Define o formato da data a ser apresentado
+        final SimpleDateFormat DATA_REQUEST_FORMATO = new SimpleDateFormat("yyyy-MM-dd");   //Define o formato da data que sera recebido como form
 
         try (PrintWriter out = response.getWriter()) {
 
@@ -49,7 +49,7 @@ public class EdicoesEventosPorDataServlet extends HttpServlet {
             URI uri;
 
             try {
-                data_obj = DATA_REQUEST_FORMATO.parse(request.getParameter("data"));
+                data_obj = DATA_REQUEST_FORMATO.parse(request.getParameter("data"));    //Converte a data do tipo String para o tipo Date
                 String uri_base = "http://localhost:8080/tarefa03/webresources/service/data/";
                 uri = new URI(uri_base + request.getParameter("data"));
                 this.web_target = client.target(uri);
